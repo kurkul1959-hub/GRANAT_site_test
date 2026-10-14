@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Управление товарами — ГРАНАТ</title>
+  <link rel="icon" href="images/granat-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/admin.css">
+  <script defer src="js/supabase-config.js"></script>
+  <script defer src="js/admin-api.js"></script>
+  <script defer src="js/admin.js"></script>
+</head>
+<body>
+  <header class="admin-header"><div class="admin-wrap"><a href="index.html" class="brand">ГРАНАТ</a><span>Управление товарами</span></div></header>
+  <main class="admin-wrap">
+    <p class="test-note">Тестовая панель. Сохранение изменяет настоящую базу товаров Supabase.</p>
+    <p id="message" class="message" role="status" aria-live="polite"></p>
+    <section id="login-section" class="panel">
+      <h1>Вход владельца</h1>
+      <form id="login-form">
+        <fieldset id="login-fields">
+          <label for="email">Email</label><input id="email" type="email" autocomplete="username" required>
+          <label for="password">Пароль</label><input id="password" type="password" autocomplete="current-password" required>
+          <button type="submit">Войти</button>
+        </fieldset>
+      </form>
+      <p class="hint">Используйте существующую учётную запись владельца. Регистрации в панели нет.</p>
+    </section>
+    <section id="workspace" hidden>
+      <div class="toolbar"><h1>Товары</h1><button id="logout" type="button" class="secondary">Выйти</button></div>
+      <div class="toolbar actions"><button id="new-product" type="button">Добавить товар</button><button id="reload" type="button" class="secondary">Обновить список</button></div>
+      <section id="editor" class="panel" hidden>
+        <h2 id="editor-title">Добавить товар</h2>
+        <form id="product-form">
+          <fieldset id="product-fields">
+            <label for="product-name">Название</label><input id="product-name" required maxlength="120">
+            <label for="product-price">Цена, ₽ за кг</label><input id="product-price" type="number" inputmode="numeric" min="0" max="1000000" step="1" required>
+            <p class="hint">Сейчас каталог поддерживает товары за килограмм и цены в целых рублях.</p>
+            <label for="product-description">Описание</label><textarea id="product-description" rows="4" required maxlength="2000"></textarea>
+            <label for="product-category">Категория</label><input id="product-category" list="categories" required maxlength="80"><datalist id="categories"></datalist>
+            <label class="checkbox"><input id="product-available" type="checkbox"> Показывать на витрине</label>
+            <label for="product-photo">Фотография с телефона</label><input id="product-photo" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+            <button id="choose-photo" type="button" class="secondary">Выбрать фотографию</button><p id="photo-name" class="hint"></p>
+            <p class="hint">JPG, PNG или WebP, до 5 МБ. Для снимков HEIC выберите JPG. Новая фотография заменит ссылку при сохранении.</p>
+            <label for="product-image">Или ссылка на фотографию</label><input id="product-image" maxlength="2000" placeholder="https://… или images/имя-файла.png">
+            <img id="photo-preview" class="photo-preview" alt="Предпросмотр фотографии товара" hidden>
+            <div class="toolbar actions"><button type="submit">Сохранить товар</button><button id="cancel" type="button" class="secondary">Отмена</button></div>
+          </fieldset>
+        </form>
+      </section>
+      <p id="list-summary"></p>
+      <div id="product-list" class="product-list" aria-live="polite"></div>
+    </section>
+  </main>
+</body>
+</html>
