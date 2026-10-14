@@ -1,0 +1,26 @@
+/* Rich gold pattern supplied by the owner; loaded on the home page only. */
+body[data-page="home"] main::before{
+ content:"";display:block;width:100%;height:98px;
+ background:url("../images/granat-gold-ornament.png") center -18px/400px auto repeat-x;
+ pointer-events:none;
+}
+body[data-page="home"] .hero{position:relative;margin-bottom:110px}
+body[data-page="home"] .hero::after{
+ content:"";position:absolute;left:0;right:0;bottom:-90px;height:81px;
+ background:url("../images/granat-gold-ornament.png") center -15px/330px auto repeat-x;
+ border-radius:12px;pointer-events:none;
+}
+@media(min-width:1280px){
+ body[data-page="home"] .hero::before{
+  content:"";position:absolute;left:440px;top:60px;width:122px;height:440px;
+  background:url("../images/granat-gold-flourish.png") center/contain no-repeat;
+  pointer-events:none;
+ }
+}
+@media(max-width:700px){
+ body[data-page="home"] main::before{height:54px;background-size:220px auto;background-position:center -10px}
+ body[data-page="home"] .hero{margin-bottom:65px}
+ body[data-page="home"] .hero::after{height:54px;bottom:-45px;background-size:220px auto;background-position:center -10px;border-radius:8px}
+}
+
+body[data-page="home"] .photo-note{background:var(--wine);color:#fff}
