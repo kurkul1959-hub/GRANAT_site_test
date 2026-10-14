@@ -10,13 +10,13 @@
   function message(text,kind=''){ $('message').textContent=text;$('message').className=`message ${kind}`; }
   function setBusy(value){
     busy=value;
-    $('login-fields').disabled=value;$('product-fields').disabled=value;
+    $('login-fields').disabled=value;$('product-fields').disabled=value;$('recovery-fields').disabled=value;
     for(const button of $('workspace').querySelectorAll('button'))button.disabled=value;
     $('new-product').disabled=value||!loaded;
   }
   function signedOut(){
     products=[];loaded=false;editingId=null;
-    $('workspace').hidden=true;$('editor').hidden=true;$('login-section').hidden=false;
+    $('workspace').hidden=true;$('editor').hidden=true;$('login-section').hidden=false;$('recovery-section').hidden=true;$('recovery-form').reset();
     $('product-list').replaceChildren();$('product-form').reset();$('password').value='';clearPreview();
   }
   function handleError(e){if(e.auth)signedOut();message(e.message||'Не удалось выполнить действие.','error');}
@@ -76,6 +76,13 @@
     $('login-section').hidden=true;$('workspace').hidden=false;
     await reload();message('Вы вошли. Можно редактировать товары.','success');
   });});
+  $('recovery-form').addEventListener('submit',e=>{e.preventDefault();run(async()=>{
+    const password=$('new-password').value;
+    if(password!==$('repeat-password').value)throw new Error('Пароли не совпадают. Введите одинаковый пароль в оба поля.');
+    try{await api.resetPassword(password);}finally{$('recovery-form').reset();}
+    signedOut();message('Пароль сохранён. Теперь войдите с вашим email и новым паролем.','success');$('email').focus();
+  });});
+  $('cancel-recovery').addEventListener('click',()=>run(async()=>{await api.logout();signedOut();message('Для установки пароля запросите новое письмо восстановления.');}));
   $('logout').addEventListener('click',()=>run(async()=>{await api.logout();signedOut();message('Вы вышли из панели.');}));
   $('new-product').addEventListener('click',()=>{if(!busy&&loaded)openEditor();});
   $('cancel').addEventListener('click',closeEditor);
@@ -98,5 +105,8 @@
     try{await reload();message('Товар сохранён. Изменения доступны покупателям после обновления каталога.','success');}
     catch(e){throw new Error('Товар сохранён, но список не обновился. Нажмите «Обновить список».');}
   });});
-  run(async()=>{const user=await api.restore();if(!user)return;$('login-section').hidden=true;$('workspace').hidden=false;await reload();message('Вход восстановлен.','success');});
+  run(async()=>{
+    if(await api.beginRecovery()){$('login-section').hidden=true;$('workspace').hidden=true;$('recovery-section').hidden=false;message('Ссылка проверена. Установите новый пароль.');$('new-password').focus();return;}
+    const user=await api.restore();if(!user)return;$('login-section').hidden=true;$('workspace').hidden=false;await reload();message('Вход восстановлен.','success');
+  });
 })();
